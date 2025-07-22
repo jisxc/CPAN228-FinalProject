@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: distcendb
+    ports:
+      - "5432:5432"
+    networks:
+      - warehouse-net
+
+  dc-manager:
+    build:
+      context: ./dcmanager/dcmanager/
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: qa
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/distcendb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - db
+    networks:
+      - warehouse-net
+
+  warehouse:
+    build:
+      context: ./Assignment1/Assignment1/
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DC_SERVICE_URL: http://dc-manager:8081/api
+    depends_on:
+      - dc-manager
+    networks:
+      - warehouse-net
+
+networks:
+  warehouse-net:
+    driver: bridge
