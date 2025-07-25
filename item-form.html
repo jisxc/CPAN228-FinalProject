@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Item</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/lux/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #fdf6fb; }
+        .card { border: none; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .btn-pink { background-color: #ff79c6; color: white; }
+        .btn-pink:hover { background-color: #ff92d0; }
+        .form-control, .form-select { border-radius: 0.75rem; }
+        .form-floating > .form-control,
+        .form-floating > .form-select { padding: 1.5rem 1rem 0.5rem; }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4 bg-white">
+                <h2 class="card-title text-center mb-4">🛍️ Add New Item</h2>
+                <div th:if="${param.success}" class="alert alert-success rounded-pill text-center">
+                    🎉 Item added successfully!
+                </div>
+                <form th:action="@{/items}" th:object="${item}" method="post" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="text" th:field="*{name}" class="form-control" id="nameInput" placeholder="Name" required>
+                        <label for="nameInput">Name</label>
+                        <div th:if="${#fields.hasErrors('name')}" class="text-danger small mt-1" th:errors="*{name}"></div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select th:field="*{brand}" class="form-select" id="brandSelect" placeholder="Brand" required>
+                            <option th:each="b: ${brands}" th:value="${b}" th:text="${b}"></option>
+                        </select>
+                        <label for="brandSelect">Brand</label>
+                        <div th:if="${#fields.hasErrors('brand')}" class="text-danger small mt-1" th:errors="*{brand}"></div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" th:field="*{yearOfCreation}" class="form-control" id="yearInput" placeholder="Year of Creation" min="2022" required>
+                        <label for="yearInput">Year of Creation</label>
+                        <div th:if="${#fields.hasErrors('yearOfCreation')}" class="text-danger small mt-1" th:errors="*{yearOfCreation}"></div>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="number" th:field="*{price}" class="form-control" id="priceInput" placeholder="Price" min="1001" step="0.01" required>
+                        <label for="priceInput">Price (≥ 1001)</label>
+                        <div th:if="${#fields.hasErrors('price')}" class="text-danger small mt-1" th:errors="*{price}"></div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-pink btn-lg rounded-pill">✨ Add to Stock</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
